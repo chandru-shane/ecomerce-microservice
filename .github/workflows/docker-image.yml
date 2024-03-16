@@ -12,6 +12,10 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_KEY: ${{ secrets.DOCKER_KEY }}
+
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
@@ -19,6 +23,4 @@ jobs:
         docker build product --tag chandrushane/flask-products:latest
         echo $DOCKER_KEY | docker login --username $DOCKER_USERNAME --password-stdin 
         docker push chandrushane/flask-products:latest
-    env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_KEY: ${{ secrets.DOCKER_KEY }}
+    
