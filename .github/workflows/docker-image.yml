@@ -23,7 +23,6 @@ jobs:
       run: |
         echo manualtesting
         echo $DOCKER_USERNAME
-        echo $DOCKER_TEST
         echo closing
         docker build product --tag chandrushane/flask-products:latest
         echo $DOCKER_KEY | docker login --username $DOCKER_USERNAME --password-stdin 
