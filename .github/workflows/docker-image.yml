@@ -19,3 +19,6 @@ jobs:
         docker build product --tag chandrushane/flask-products:latest
         echo $DOCKER_KEY | docker login --username $DOCKER_USERNAME --password-stdin 
         docker push chandrushane/flask-products:latest
+    env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_KEY: ${{ secrets.DOCKER_KEY }}
