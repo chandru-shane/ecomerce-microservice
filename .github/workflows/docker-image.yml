@@ -22,6 +22,7 @@ jobs:
     - name: Build the Docker image
       run: |
         echo manualtesting
+        echo $DOCKER_USERNAME
         echo $DOCKER_TEST
         docker build product --tag chandrushane/flask-products:latest
         echo $DOCKER_KEY | docker login --username $DOCKER_USERNAME --password-stdin 
