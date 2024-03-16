@@ -15,5 +15,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build product --file Dockerfile --tag chandrushane/flask-products:$(date +%s)
-      run: docker push chandrushane/flask-products:$(date +%s)
+      run: |
+        docker build product --file Dockerfile --tag chandrushane/flask-products:$(date +%s)
+        docker push chandrushane/flask-products:$(date +%s)
