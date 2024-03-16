@@ -21,10 +21,11 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: |
-        echo manualtesting
-        echo $DOCKER_USERNAME
-        echo closing
         docker build product --tag chandrushane/flask-products:latest
+        docker build orders --tag chandrushane/flask-orders:latest
+        docker build users --tag chandrushane/flask-users:latest
         echo $DOCKER_KEY | docker login --username $DOCKER_USERNAME --password-stdin 
         docker push chandrushane/flask-products:latest
+        docker push chandrushane/flask-orders:latest
+        docker push chandrushane/flask-users:latest
     
