@@ -17,4 +17,5 @@ jobs:
     - name: Build the Docker image
       run: |
         docker build product --tag chandrushane/flask-products:latest
+        echo $DOCKER_KEY | docker login --username $DOCKER_USERNAME
         docker push chandrushane/flask-products:latest
