@@ -43,11 +43,9 @@ class ProductDetailView(Resource):
         data = request.json
         product = Product.query.get_or_404(id)
         
-        # Check if the provided version matches the current version in the database
         if 'version' not in data or data['version'] != product.version:
             return {'message': 'The product has been updated by another user. Please reload and try again.'}, 409
         
-        # Update the product attributes
         for key, value in data.items():
             setattr(product, key, value)
         # Increment the version number

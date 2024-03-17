@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecom-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecom
+  template:
+    metadata:
+      labels:
+        app: ecom
+    spec:
+      containers:
+        - name: users
+          image: chandrushane/flask-users:latest
+
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            periodSeconds: 10
+            initialDelaySeconds: 5
+        
+        # - name: orders
+        #   image: chandrushane/first-orders:latest
+
+        #   livenessProbe:
+        #     httpGet:
+        #       path: /
+        #       port: 5002
+        #     periodSeconds: 10
+        #     initialDelaySeconds: 5
+        
+        # - name: products
+        #   image: chandrushane/first-products:latest
+
+        #   livenessProbe:
+        #     httpGet:
+        #       path: /
+        #       port: 5002
+        #     periodSeconds: 10
+        #     initialDelaySeconds: 5

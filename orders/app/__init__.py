@@ -1,9 +1,8 @@
 from flask import Flask 
 import os
 from .config import DevelopmentConfig
-from .extensions import api, db
+from .extensions import api, db, migrate
 from .resources import ns
-from flask_migrate import Migrate
 
 def create_app():
 
@@ -14,7 +13,7 @@ def create_app():
 
     api.init_app(app)
     db.init_app(app)
-    migrate = Migrate()
+    
     migrate.init_app(app, db)
     api.add_namespace(ns)
 
