@@ -20,13 +20,13 @@ class Order(db.Model):
     product_id = Column(Integer)
     user_id = Column(Integer)
     price = Column(DECIMAL(2))
-    quanity = Column(Integer)
+    quantity = Column(Integer)
     status = Column(String, default=StatusEnum.pending)
     expected_delivery_time = Column(DateTime)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     created_at = Column(DateTime, default=datetime.utcnow)
     
-    def __init__(self, product_id=None, user_id=None, quantity=None, status=None,
+    def __init__(self, product_id=None, user_id=None, quantity=None, status=StatusEnum.pending,
                  price=None, expected_delivery_time=None, *args, **kwargs):
         self.product_id = product_id
         self.user_id = user_id
@@ -38,3 +38,16 @@ class Order(db.Model):
 
     def __repr__(self):
         return f"<Order {self.id}>"
+    
+    def as_dict(self):
+        price_str = str(self.price) if self.price is not None else None
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'product_id': self.product_id,
+            'price': price_str,
+            'status':self.status,
+            'quantity': self.quantity,
+            'updated_at': self.updated_at,
+            'created_at': self.created_at
+        }

@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-db
+  template:
+    metadata:
+      labels:
+        app: flask-db
+    spec:
+      containers:
+        - name: flask-db
+          image: postgres:15
+          env:
+            - name: POSTGRES_PASSWORD
+              value: your_password
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5432
+            periodSeconds: 10
+            initialDelaySeconds: 5
+          

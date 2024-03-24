@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ecom-service
+spec:
+  selector:
+    app: ecom
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5001
+      name: users
+    - protocol: TCP
+      port: 81
+      targetPort: 5002
+      name: orders
+    - protocol: TCP
+      port: 82
+      targetPort: 5003
+      name: products

@@ -1,0 +1,78 @@
+version: "1.0"
+services:
+  postgres_db:
+    image: postgres:15
+    container_name: postgres_db
+    restart: unless-stopped
+    ports:
+      - "6432:5432"
+    
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    
+    volumes:
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+
+  products:
+    image: chandrushane/flask-products
+    container_name: products
+    restart: unless-stopped
+    ports:
+      - 5001:5000
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: postgres_db
+      USERS_SERVICE: users:5000
+      PRODUCTS_SERVICE: products:5000
+
+  
+  users:
+    image: chandrushane/flask-users
+    container_name: users
+    restart: unless-stopped
+    ports:
+      - 5002:5000
+    
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: postgres_db
+
+    
+  
+  orders:
+    image: chandrushane/flask-orders
+    container_name: orders
+    # command: ["/app/docker/docker-bootstrap.sh", "app"]
+    restart: unless-stopped
+    ports:
+      - 5003:5000
+    
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: postgres_db
+      USERS_SERVICE: users:5000
+      PRODUCTS_SERVICE: products:5000
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: unless-stopped
+    volumes:
+      - ./grafana/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
+    ports:
+      - "3000:3000"
