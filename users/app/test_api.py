@@ -70,7 +70,7 @@ def test_update_password_view(client, user):
     print(response.json)
     assert response.status_code == 200
     access_token = response.json.get("access_token")
-    response = client.get("/api/user", json=data, headers={"Authorization": f"Bearer {access_token}"})
+    response = client.get("/api/me", json=data, headers={"Authorization": f"Bearer {access_token}"})
     print(response.json)
     
-    assert response.status == 200
+    assert response.status_code == 200
