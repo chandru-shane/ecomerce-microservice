@@ -15,7 +15,7 @@ ns = Namespace("api")
 from prometheus_client import Counter
 view_metric = Counter('view', 'Product view', ['user'])
 
-
+detail_view_metric = Counter('detail_view', 'Product Detail view', ['product'])
 
 
 @ns.route("/products")
@@ -36,6 +36,8 @@ class ProductView(Resource):
         data = request.json 
         data.pop('id', None)
         data["user_id"] = auth_data.get('id')
+        product = Product.query.filter(Product.name==data.get("name")).first()
+        if product: abort(400, "Use different name")
         product = Product(**data) 
         db.session.add(product)
         db.session.commit()
@@ -48,6 +50,7 @@ class ProductDetailView(Resource):
     @verify_token_with_user_auth
     @ns.marshal_with(product_model)
     def get(self, id, auth_data):
+        detail_view_metric.labels(product=id).inc()
         try:
             product = Product.query.filter_by(id=id, user_id=auth_data['id']).first_or_404()
         except NotFound:
@@ -61,12 +64,13 @@ class ProductDetailView(Resource):
     @ns.marshal_with(product_model)
     def put(self, id, auth_data):
         data = request.json
-        
         try:
             product = Product.query.filter_by(id=id, user_id=auth_data['id']).first_or_404()
         except NotFound:
             return jsonify({"error": "Product not found for the given id and user_id"}), 404
-
+        
+        product_name = Product.query.filter(Product.name==data.get("name")).first()
+        if product_name and product.id != id: abort(400, "Use different name")
         
         if data.get("user_id") and data.get("user_id") != auth_data.get("id"):
             abort(403, "You don't have permissin to do this")

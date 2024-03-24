@@ -11,8 +11,6 @@ class Config(object):
     password = os.environ.get("DB_PASSWORD", "postgres")
     host = os.environ.get("DB_HOST", "postgres_db")
     SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg2://{user}:{password}@{host}/flask_products"
-    
-    orders_api = f"http://{os.environ.get('USERS_SERVICE', 'users')}/api/"
     LOGFILE = "log.log"
     LOG_BACKTRACE = True
     LOG_LEVEL = 'DEBUG'

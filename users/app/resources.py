@@ -74,7 +74,8 @@ class CreateUser(Resource):
         db.session.commit()
 
         return new_user.as_dict(), 201
-from loguru import logger
+
+
 # Update user endpoint password
 @ns.route('/user_update')
 class UpdateUser(Resource):
@@ -85,10 +86,8 @@ class UpdateUser(Resource):
         data = update_user_parser.parse_args()
         password = data.get('password')
         user = get_jwt_identity()            
-        user = User.query.get(username=user)
-        logger.debug(f"{user}, {type(user)}")
-        logger.debug("*"*100)
-        user.password = generate_password_hash(password)
+        user = User.query.filter(User.username==user).first()
+        user.password_hash = generate_password_hash(password)
         db.session.commit()
 
         return user.as_dict(), 200
