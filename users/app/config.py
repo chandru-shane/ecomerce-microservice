@@ -7,9 +7,9 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = 'this-really-needs-to-be-changed'
-    user = os.environ.get("user", "postgres")
-    password = os.environ.get("password", "")
-    host = os.environ.get("host", "")
+    user = os.environ.get("DB_USER", "postgres")
+    password = os.environ.get("DB_PASSWORD", "postgres")
+    host = os.environ.get("DB_HOST", "localhost:5432")
     SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg2://{user}:{password}@{host}/flask_users"
     PROPAGATE_EXCEPTIONS = True
 
@@ -30,3 +30,7 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
+    user = os.environ.get("DB_USER", "postgres")
+    password = os.environ.get("DB_PASSWORD", "postgres")
+    host = os.environ.get("DB_HOST", "localhost:5432")
+    SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg2://{user}:{password}@{host}/flask_orders"

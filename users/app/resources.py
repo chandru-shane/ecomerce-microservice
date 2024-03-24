@@ -1,12 +1,10 @@
-from flask import Flask, jsonify, request
 from flask_restx import Namespace, Resource
 from .models import User
-from .extensions import db
-from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required, get_jwt_identity
+from .extensions import db, limiter
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 from .api_models import user_model, token_model, update_user_parser, user_response_model
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask_jwt_extended.exceptions import JWTDecodeError
 from flask import abort
 ns = Namespace("api")
 
@@ -35,7 +33,7 @@ class Login(Resource):
 
 
 
-@ns.route('/protected')
+@ns.route('/me')
 class Protected(Resource):
     @jwt_required()
     def get(self):
@@ -76,21 +74,21 @@ class CreateUser(Resource):
         db.session.commit()
 
         return new_user.as_dict(), 201
-
-# Update user endpoint
-@ns.route('/user/<int:user_id>')
+from loguru import logger
+# Update user endpoint password
+@ns.route('/user_update')
 class UpdateUser(Resource):
+    @jwt_required()
     @ns.expect(update_user_parser)
     @ns.response(200, 'User updated successfully', user_response_model)
-    def put(self, user_id):
+    def put(self):
         data = update_user_parser.parse_args()
         password = data.get('password')
-
-        user = User.query.get(user_id)
-        if not user:
-            return {'message': 'User not found'}, 404
-
-        user.password_hash = generate_password_hash(password)
+        user = get_jwt_identity()            
+        user = User.query.get(username=user)
+        logger.debug(f"{user}, {type(user)}")
+        logger.debug("*"*100)
+        user.password = generate_password_hash(password)
         db.session.commit()
 
         return user.as_dict(), 200
